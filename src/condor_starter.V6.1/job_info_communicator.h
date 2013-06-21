@@ -27,6 +27,7 @@
 #include "local_user_log.h"
 #include "condor_holdcodes.h"
 #include "enum_utils.h"
+#include <classad/classad_stl.h>
 
 #if HAVE_JOB_HOOKS
 #include "StarterHookMgr.h"
@@ -41,6 +42,8 @@
 
 class JobInfoCommunicator : public Service {
 public:
+
+	friend void HookPrepareJobClient::hookExited(int exit_status);
 		/// Constructor
 	JobInfoCommunicator();
 
@@ -144,6 +147,7 @@ public:
 
 		/// Return a pointer to the ClassAd for the machine.
 	virtual ClassAd* machClassAd( void );
+	virtual classad_shared_ptr<ClassAd> machClassAdSharedPtr( void );
 
 		/// Return the job's universe integer.
 	int jobUniverse( void );
@@ -473,7 +477,7 @@ protected:
 	ClassAd* job_ad;
 
 		// The Machine ClassAd running the job.
-	ClassAd* mach_ad;
+	classad_shared_ptr<ClassAd> mach_ad_ptr;
 
 		/// The universe of the job.
 	int job_universe;

@@ -2271,19 +2271,18 @@ JICShadow::receiveMachineAd( Stream *stream )
         bool ret_val = true;
 
 	dprintf(D_FULLDEBUG, "Entering JICShadow::receiveMachineAd\n");
-	mach_ad = new ClassAd();
+	mach_ad_ptr.reset(new ClassAd());
 
 	stream->decode();
-	if (!getClassAd(stream, *mach_ad))
+	if (!getClassAd(stream, *mach_ad_ptr))
 	{
 		dprintf(D_ALWAYS, "Received invalid machine ad.  Discarding\n");
-		delete mach_ad;
-		mach_ad = NULL;
+		mach_ad_ptr.reset();
 		ret_val = false;
 	}
 	else
 	{
-		dPrintAd(D_JOB, *mach_ad);
+		dPrintAd(D_JOB, *mach_ad_ptr);
 	}
 
 	return ret_val;
